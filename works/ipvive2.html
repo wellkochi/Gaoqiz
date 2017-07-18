@@ -57,14 +57,76 @@
 
     <div class="container pt">
         <div class="row mt">
-            <div class="col-lg-6 col-lg-offset-3">
-                <h3 style="text-align: center">Design Documentation - ipvive UI 1.0</h3>
-                <hr>
-                <p>This documentation demonstrates UX design thinking process, including flowchart, scenarios, wireframe, and design choices. Click picture for demonstration.</p>
-            </div>
-        </div>
-        <div class="row mt centered">
-            <a href="https://wellkochi.github.io/ipvivehw2/" target="_blank"><img class="img-responsive" src="assets/img/ipvive.png"></a>
+            <h2 style="text-align: center">Design Documentation - ipvive UI 1.0</h2>
+            <hr>
+            <p>I was doing a practice on UI for <a href="http://ipvive.com/">ipvive</a> and this is the documentation. ipvive is an embedded human insights cloud services to help people capture the always illusive emotional chemistry that connects them to and deepens relationships with the world around them. It is called Human Chemistry Intelligence.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive.png"></center>
+            <br><br><br><br>
+            <h3>The Challenge</h3>
+            <p>This time I was assigned to make a user-specific CMS at the scale of a web screen. <br><br> Requirements: <br> • Input: video, voice, location, hrm <br> • Output: who, what, when, where, feeling, why, what for and who else <br><br> This is a vague specification. With limited information provided, I had to come up pretty much everything. On the other hand, this gives me the design freedom. <br> My thought about this CMS is that all information should be visible in one interface. No need to jump around between pages. Simplicity is the top priority.</p>
+            <center><img class="img-responsive" src="../assets/img/hierarchy.jpeg"><br>Stephen Anderson's UX Hierarchy of Needs</center>
+            <br><br><br>
+            <h3>Flowchart</h3>
+            <center><img class="img-responsive" src="assets/img/ipvive_1.png"><br>Medium: desktop web browser</center>
+            <br><br><br><br>
+            <h3>Scenario</h3>
+            <p>The potential use for this app is to give suggestions to users based on their current chemistry level. I came up a idea in a dating situation. <a href="https://markmanson.net/compatibility-and-chemistry">Dating would alter chemistry level</a> in our body, so a dating scenario would be a perfect fit.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive_2.png"><br><a href="https://en.wikipedia.org/wiki/Chemistry_(relationship)">Chemistry Level in Relationship</a></center>
+            <br><br><br><br>
+            <h3>Wireframe</h3>
+            <center><img class="img-responsive" src="assets/img/ipvive_3.png"><br>Input Layout</center>
+            <br><br>
+            <p>• I considered the <a href="https://en.wikipedia.org/wiki/Hamburger_button">hamburger button</a>. information should be displayed vertically at either left or right side of the screen.<br><br> • Information should be visible to users. There was an article I read that showed users are most likely will not discover info/optins if they are placed under an button that need an extra click. The best way to inform users is to display info directly, so I made the info consistently visible instead of hidden under the hamburger button. Therefore, I ditched the hamburger button. <br><br> • The information section takes 1/6 horizontal width because this is the ideal space for display info across a wide screen.<br><br> • <a href="https://en.wikipedia.org/wiki/Serial_position_effect">Serial Position effect</a> told us that the propensity of a user to best remember the first and last items in a series. By adapting this concept, I reserved top-left and bottom-left for important components.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive_4.png"><br>Initial Layout</center>
+            <br><br>
+            <p>• There are 4 different sections: information, input, emotional status, and function.<br><br> • I was pondering about where the ipvive logo should be placed. There were 4 candidates: top-left, bottom-left, top-right, bottom-right. According to <a href="https://www.nngroup.com/articles/logo-placement-brand-recall/">an article from Nielsen Norman Group</a>, "Users are 89% more likely to remember logos shown in the traditional top-left position than logos placed on the right." So I decided to place the ipvive logo at top left corner as the <a href="http://www.investopedia.com/terms/b/brand-identity.asp">brand identity</a>.<br><br> • Input should be the most significant part. In this case, I placed audio track under the video screen, indicating audio goes along with the video (referring to traditional video editing software interface).
+            </p>
+            <center><img class="img-responsive" src="assets/img/ipvive_5.jpg" width="60%"><br><br>Video editing software. Audio tracks are beneath video.</center>
+            <br><br><br><br>
+            <h4>- Video Input</h4>
+            <p>This is important. Consider the majority of modern monitor screens are horizontal, videos should be displayed horizontally to fit the screen resolution. But a lot of people hold their phones vertically to record the video. This will cause what's called the <a href="http://osxdaily.com/2012/07/18/the-single-most-important-tip-for-recording-video-on-iphone/">"Vertical Video Syndrome"</a> --- it means there will be empty parts on both side of screen.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive_6.png"><br><a href="http://osxdaily.com/2012/07/18/the-single-most-important-tip-for-recording-video-on-iphone/">Vertical Video Syndrome</a>. Plenty of empty space on both sides.
+                <br><br><br><br>
+                <img class="img-responsive" src="assets/img/ipvive_7.png"><br>Square video is better, but there still will be empty parts on both sides.
+                <br><br><br><br>
+                <img class="img-responsive" src="assets/img/ipvive_8.png"><br>Horizontal video is the most appropriate case, and this is the correct way to record video with a mobile device.
+            </center>
+            <br><br><br><br>
+            <p>With the rest of space, I placed status section under the video/audio section. This was to manifest that status section was related to video/audio input.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive_9.png"><br>The final structure. Left side is static and displays info to users. Right side is dynamic and displays real-time video, audio, and status. </center>
+            <br><br><br><br>
+            <h3>Other Details</h3>
+            <br>
+            <h4>- Color</h4>
+            <p>• I decided to use standard sRGB color since they are <a href="http://cameratico.com/guides/web-browser-color-management-guide/">compatible with modern web browsers</a>.<br><br> • It is a single-page app and interface should be clean and easy to navigate, so there should be <a href="http://www.tigercolor.com/color-lab/tips/tip-01.html">no more than 3 colors</a>. <br><br> • I have looked up the <a href="http://ipvive.com/">ipvive website</a> and used Photoshop to extract colors from the two quotes --- "Divergent from common thinking" and "Human Chemistry Intelligence."</p>
+            <center><img class="img-responsive" src="assets/img/ipvive.png"><br><img class="img-responsive" src="assets/img/ipvive_10.png"><img class="img-responsive" src="assets/img/ipvive_11.png"><br><br><br><img class="img-responsive" src="assets/img/ipvive_12.png"><br><br>These two colors form a good contrast ratio balance (they are at the opposite sides of the color spectrum).</center>
+            <br><br><br><br>
+            <h4>- Font</h4>
+            <p>• It is possible to use more font family, but no more than 3. Too many font family variations would cause inconsistency and messy feeling to users.<br><br> • Since the content is only one single page, I used only “Apple symbol” throughout the whole interface for the sake of consistency.<br><br> • For sections that displaying more information, use smaller font size. For example: the “where” section has 3 lines: place name, street, and city state zipcode, so this section should use smaller font size to fit all the info.
+            </p>
+            <center><img class="img-responsive" src="assets/img/ipvive_13.png"><br>Font size depends on content load</center>
+            <br><br><br><br>
+            <h4>- Icons</h4>
+            <p>
+                • Icons should convey its meaning without text explanation. They are visual languages. <br><br> • There are icons available online ready for use. I referenced <a href="https://developer.apple.com/macos/human-interface-guidelines/icons-and-images/custom-icons/">Apple's Human Interface Guidelines</a> to help me make decisions.</p>
+            <center><img class="img-responsive" src="assets/img/ipvive_14.png"><br>From top to bottom: time (when), location (where), people (who), activity info (what), motivation (what for), emotion (feeling).</center>
+            <br><br><br><br>
+            <h4>- Function Control</h4>
+            <p>
+                • This is the most controversial part I couldn’t decide for a while: should user need a “pause” button?<br><br> • I referred this function to <a href="https://youtu.be/qzMQza8xZCc
+">Youtube live video</a>. When users are away or need a short break, instead of closing the tab, they will pause the video and get back on it later.<br><br> • And then I thought about one situation: what if users want to get an analysis at a particular facial expression or a particular moment? If there is no pause button, video, audio, and emotional status will always be dynamic and constantly changing. Users will lose control over this app. That would be big bummer to the overall experience. <br><br> • So I decided to enable the pause function. I placed a function button on the bottom right --- the place designated for it. Like any regular play/pause button, it enables users to pause and resume the process.<br><br> • According to <a href="https://en.wikipedia.org/wiki/Von_Restorff_effect">Von Restorff effect</a>, this button is a <a href="https://en.wikipedia.org/wiki/Call_to_action_(marketing)">call to action</a> button and standing out on the interface. I enlarged the size of the button to make it more distinguishable from the rest of rounded icons.
+            </p>
+            <center><img class="img-responsive" src="assets/img/ipvive_15.png"><br>Play and pause button for a better control</center>
+            <br><br><br><br>
+            <h4>- Status Bar</h4>
+            <p>
+                • Choosing the status bar was pretty straight forward --- every icon in this page is rounded, so for the sake of consistency, status bar is also rounded.<br><br> • For consistency and contrast, the color of the fill bar animation is the same ocean blue. Hex #5088a5.<br>
+            </p>
+            <center><img class="img-responsive" src="assets/img/ipvive_16.gif" loop=infinite><br>Satus Bar Animation</center>
+            <br><br><br><br><br>
+            <h3>First Colored Visual Mockup</h3>
+            <br>
+            <center><img class="img-responsive" src="assets/img/ipvive_17.png" width="95%"><br><br>The very first colored mockup</center>
         </div>
         <!-- /row -->
     </div>
@@ -104,7 +166,7 @@
 
 
     <!-- Bootstrap core JavaScript
-    ================================================== -->
+================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="../assets/js/bootstrap.min.js"></script>
 </body>
