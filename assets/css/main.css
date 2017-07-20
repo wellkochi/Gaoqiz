@@ -249,6 +249,71 @@ bt {
     opacity: 0.5;
 }
 
+.blur img {
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    -ms-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.blur:hover .middle {
+    opacity: 1;
+}
+
+.blur:hover img {
+    -webkit-filter: blur(1.1rem);
+}
+
+.middle {
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    font-weight: bold;
+    font-size: 2rem;
+    color: #ff3232;
+    width: 90%;
+    top: 42%;
+    left: 46%;
+    transform: translate(-45%, -45%);
+    -ms-transform: translate(-50%, -50%);
+}
+
+.flip_container {
+    width: 15rem;
+    height: 15rem;
+    margin: auto;
+}
+
+.flip_container:hover .flip {
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
+.flip {
+    -webkit-transition: 0.5s;
+    transition: 0.5s;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.flip_front,
+.flip_back {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    position: absolute;
+}
+
+.flip_front {
+    -webkit-transform: rotateY(0deg);
+    transform: rotateY(0deg);
+}
+
+.flip_back {
+    -webkit-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
 
 /* glyphicon Configuration */
 
