@@ -314,6 +314,12 @@ bt {
     transform: rotateY(180deg);
 }
 
+.disabled {
+    pointer-events: none;
+    cursor: default;
+    color: lightslategray;
+}
+
 
 /* glyphicon Configuration */
 
