@@ -56,7 +56,8 @@
     <div class="container pt">
         <div class="row mt">
             <h2 style="text-align: center">Design Documentation - Trolley Problem VR</h2>
-            <hr>
+            <br>
+            <hr><br>
             <p>This was a web interactive 3D animation project that me and other 3 lovely teammates worked through out the spring 2017 semester at Stony Brook Unviersity. It was a team project for CSE 323, a human-computer interaction class. <br><br>
                 <b>My Role</b>: I was the designer and one of two developers of this project.
             </p>
@@ -67,7 +68,7 @@
                 <img class="img-responsive" src="assets/img/Trolley.png"><br><a href="https://youtu.be/bOpf6KcWYyw" target="_blank">What would you do?</a>
             </center>
             <br><br><br><br>
-            <hr>
+            <hr><br>
             <h3>Target Audience</h3>
 
             <p>The target audience is undergraduate college students in an introductory philosophy or ethics class. Students are generally aged between 17 - 22 and have to take an ethics class regardless of their degree. Similar/competitive products in genre: <br><br> - Moral Machine MIT: Quesions based on autonomous driving.<br> - Classroom Aquatic: A game that is based on a classroom and taking a test, you also have to make the decision to cheat or not to cheat.<br> - Cardboard Crash Sundance Trailer: A autonomous driving simulation. Which decision do you choose if each results in a bad outcome?<br> - Affective basis of Judgement-Behavior Discrepency in Virtual Experiences of Moral Dilemmas</p>
@@ -109,7 +110,8 @@
             <h3>Hardware:</h3>
 
             <p>Google Cardboard, Samsung GearVR, any VR headset or a computer connected to the internet.</p>
-            <hr><br><br>
+            <br><br>
+            <hr>
             <!--
             <h3>Team</h3>
             <center><img class="img-responsive" src="assets/img/trolley_1.png" width="60%"><br><br>Lovely Teammates</center><br>
@@ -133,43 +135,46 @@
                 1. Expected individual attendance, punctuality, and participation at all team meetings: Meetings can be rescheduled if no more than 3 people can meet at the same time. <br> 2. Expected level of responsibility for fulfilling team assignments, timelines, and deadlines: Savi will update google calendar to ensure deadlines are being met Level of responsibility is high, team is expected to be honest about outside work/commitments that may interfere. </p>
             <hr><br>
 -->
+            <br>
             <h3>Personas</h3>
             <p>The team had a meeting to identify target audiences. Considered ourselves related to this project, we determined target audience would be undergraduate college students, age 17 - 22, in an <b>introductory philosophy or ethics class</b>. We created 3 personas. </p>
             <center><img class="img-responsive" src="assets/img/trolley_7.png"><br><br>Persona A - Devon S.</center><br><br>
             <center><img class="img-responsive" src="assets/img/trolley_8.png"><br><br>Persona B - Ana F.</center><br><br>
             <center><img class="img-responsive" src="assets/img/trolley_9.png"><br><br>Persona C - Sarah M.</center><br><br><br><br>
-            <hr>
+            <hr><br>
             <h3>Scenarios</h3>
             <p>We did research online and found out the best use of Trolly Problem is in a ethic discussion or ethic class. <u>Since this was an undergraduate curriculumn project and target audiences were students, we decided to put the scenario in an academic environment.</u></p><br>
             <center><img class="img-responsive" src="assets/img/trolley_3.png"><br><br>Scenarios are based on people who need to deal with ethical problem in a virtual world</center><br>
             <br><br><br>
-            <hr>
+            <hr><br>
             <h3>Flowchart</h3>
             <p>We decided to let the user have limited control over this animation, so strictly speaking, it was an interactive 3D animation piece. It would be hosted on a website, so users could access this animation through any modern web browser. In order to make the 3D animation compatible with both virtual reality and mobile, we implemented the piece with <a href="https://aframe.io/">A-FRAME</a>. According to the definition of Trolley Problem, a person has to decide which track the train is going, so in the animation, we enabled user to have control over a lever. Users would have to decide to pull the lever or not. </p>
             <center><img class="img-responsive" src="assets/img/trolley_2.png"><br><br>Users have to make interactions</center><br>
             <br><br><br>
-            <hr>
+            <hr><br>
             <h3>Wireframe</h3>
             <p>We had a meeting at the very beginning to decide how the interface was going to be. I proposed this had to be an first-person perspective since I played <a href="https://en.wikipedia.org/wiki/First-person_shooter">FPS games</a> and knew this would be the perfect medium. The reason? First-person perspective gives users an immsersive experience and therefore creates the necessary empathy. For a ethical problem, empathy is no doubt an important factor and affects how people make choices. Luckily, <a href="https://aframe.io/">A-FRAME</a> supports first-person perspective.</p>
-            <center><img class="img-responsive" src="assets/img/trolley_4.png" width="95%"><br><br>Initial concept. The circle at the center is the cursor.</center><br>
-            <center><img class="img-responsive" src="assets/img/trolley_5.png"><br>Initial environment concept. Just like <a href="https://en.wikipedia.org/wiki/First-person_shooter">FPS games</a>, cursor is always at the center. </center><br><br><br><br><br>
+            <center><img class="img-responsive" src="assets/img/trolley_4.png" width="95%"><br><br>Initial Concept</center><br>
+            <center><img class="img-responsive" src="assets/img/trolley_5.png"><br>Initial environment concept. Just like <a href="https://en.wikipedia.org/wiki/First-person_shooter">FPS games</a>, cursor is always at the center</center><br><br><br><br><br>
             <center><img class="img-responsive" src="assets/img/trolley_6.png"><br><br><a href="https://aframe.io/">A-FRAME</a> Interface Visual Mockup</center>
             <br><br><br><br>
-            <hr>
+            <hr><br>
             <h3>Limitations</h3>
             <p>I used <a href="https://aframe.io/">A-FRAME</a> to implement the animation and A-FRAME was a fairly new technolgy. I had to import collada models into A-FRAME to build up the environment. I found two problems in the process:<br><br> 1. There was no way to animate the collision effect. I went to <a href="https://stackoverflow.com/questions">Stack Overflow</a> trying to find any solution but there was no answer about A-FRAME model collisions.<br> 2. Since the imported models were not a small workload, it required quite a long time to load in a mobile device. Some old mobiles could not even run the program because it was too much for its capability. I tested on multiple mobile devices in class and found out iPhone 6S was having problem to load the scene, but surprisingly, the animation could run smoothly on Google Pixel. <br><br>
                 <b>I realized this was the risk I have to take to use a new technology: no reference, no previous experience, no solutions. But I did not regret it. I was having a feeling of being a pioneer and I knew there would be some obstacles along the way.</b>
             </p>
             <br><br>
-            <hr>
+            <hr><br>
             <h3>The Outcome</h3>
-            <p>The result was appealing. The class was amazed that all we needed for demonstration was a web browser. We did not figure out the collision part, but as we explained that A-FRAME was a fairly new technology and we could not find solutions, the class expressed a understanding of our situation. The professor appreciated the project and asked about what technologies we used for development.<br><br> I was so glad that I somehow managed for being a end-to-end designer and developer. I learned a ton out of this project. I came up the concept, designed the interaction, and coded 60% of the animation (35% to another developer, 5% to the collision part that didn't work out).<br> *currently waiting for the presentation picture from the professor*
+            <p>The result was appealing. The class was amazed that all we needed for demonstration was a web browser. We did not figure out the collision part, but as we explained that A-FRAME was a fairly new technology and we could not find solutions, the class expressed a understanding of our situation. The professor appreciated the project and asked about what technologies we used for development.<br><br> I was so glad that I somehow managed for being a end-to-end designer and developer. I learned a ton out of this project. I came up the concept, designed the interaction, and coded 60% of the animation (35% to another developer, 5% to the collision part that didn't work out).<br><br> ***Currently waiting for the presentation picture from the professor***
             </p>
             <br>
             <center>
-                <a href="https://wellkochi.github.io/Trolley/" target="_blank"><img class="img-responsive" src="assets/img/Trolley.png"><br>Click for live demonstration</a>
+                <img class="img-responsive" src="assets/img/trolley_10.JPG" width="40%"><br><br>Mobile Compatible (iPhone 6, iOS 10.2.1, Chrome)<br><br><br>
+                <a href="https://wellkochi.github.io/Trolley/" target="_blank"><img class="img-responsive" src="assets/img/Trolley.png"><br>SEE IT ALIVE</a><br><br>
+
             </center>
-            <br><br><br><br>
+            <br><br><br>
             <hr><br>
             <a href="#" style="float: left; margin-left: 5%" class="disabled">
                 <b>Prev</b>
