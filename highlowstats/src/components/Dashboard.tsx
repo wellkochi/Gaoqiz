@@ -210,7 +210,6 @@ export function Dashboard() {
         if (!statistics.effectiveDays) setError(currentCopy.errors.noCompleteDays);
       } catch (cause) {
         if (cause instanceof DOMException && cause.name === "AbortError") return;
-        console.error("[dashboard-load]", cause);
         setError(providerErrorMessage(cause, language, marketSymbol));
       } finally {
         if (abortRef.current === controller) setLoading(false);

@@ -13,7 +13,7 @@
 
 - UI：React 19、Next.js App Router API、Vinext
 - 语言：TypeScript 5，严格模式
-- 构建与本地开发：Vite 8、Vinext
+- 构建与本地开发：Vite 8、Vinext；GitHub Pages 使用 Next.js Webpack 静态导出
 - 样式：Tailwind CSS 4 的 PostCSS 入口 + 项目 CSS
 - 图表：Recharts 3
 - 高精度价格比较：Decimal.js
@@ -27,6 +27,7 @@
 - Node.js `>= 22.13.0`
 - npm（项目包含唯一锁文件 `package-lock.json`）
 - 普通现代浏览器，需支持 IndexedDB、AbortController 和 `Intl.DateTimeFormat`
+- 不依赖构建时下载外部字体；使用系统字体栈，GitHub Actions 和离线构建更稳定
 
 ## 安装
 
@@ -56,6 +57,7 @@ npm run typecheck
 npm run lint
 npm run test
 npm run build
+npm run build:pages
 ```
 
 浏览器交互测试首次运行前安装 Chromium：
@@ -75,82 +77,6 @@ npm run preview
 
 ```text
 http://localhost:3000
-```
-
-## GitHub Pages：`gaoqiz.com/highnlow/`
-
-项目保留原有 Sites/Worker 构建，同时额外支持 Next.js 静态导出到 GitHub Pages 子路径。执行：
-
-```bash
-npm run build:pages
-```
-
-会自动设置构建标记并生成：
-
-```text
-out/
-```
-
-静态版本固定使用：
-
-```text
-/highnlow/
-```
-
-作为 `basePath` 和静态资源前缀；本地 `npm run dev`、`npm run build` 与原 Sites 构建不受影响。
-
-### Gaoqiz 仓库结构
-
-部署工作流假定仓库结构为：
-
-```text
-Gaoqiz/
-├── CNAME
-├── 现有主页文件
-├── highlowstats/                   # 本项目源码
-└── .github/
-    └── workflows/
-        └── deploy-pages.yml
-```
-
-项目内附有可直接使用的工作流模板：
-
-```text
-deploy/github-pages.yml
-```
-
-GitHub 只读取仓库根目录下的 `.github/workflows/`。把新的 `highlowstats/` 放入 `Gaoqiz/` 后，在仓库根目录执行：
-
-```bash
-mkdir -p .github/workflows
-cp highlowstats/deploy/github-pages.yml .github/workflows/deploy-pages.yml
-```
-
-该工作流会：
-
-1. 安装并检查 `highlowstats`；
-2. 生成静态 `out/`；
-3. 保留仓库中现有主页和 `CNAME`；
-4. 将 App 发布到站点产物的 `highnlow/`；
-5. 整站部署到 GitHub Pages。
-
-在 GitHub 仓库的 `Settings → Pages → Build and deployment → Source` 选择 `GitHub Actions`。不需要为 `/highnlow` 新增 CNAME 或修改 DNS。
-
-### 本地预览 GitHub Pages 版本
-
-在 `highlowstats/` 中执行：
-
-```bash
-npm run build:pages
-mkdir -p /tmp/gaoqiz-preview/highnlow
-cp -R out/. /tmp/gaoqiz-preview/highnlow/
-python3 -m http.server 8080 --directory /tmp/gaoqiz-preview
-```
-
-浏览器打开：
-
-```text
-http://localhost:8080/highnlow/
 ```
 
 ## 数据源
@@ -262,8 +188,6 @@ tests/
   e2e/dashboard.spec.ts        # 桌面和移动关键交互
 worker/index.ts                # Vinext/Cloudflare Worker 入口
 .openai/hosting.json           # 现有 ChatGPT Sites 项目标识
-deploy/github-pages.yml        # 复制到 Gaoqiz 仓库根目录的 Pages 工作流
-scripts/build-pages.mjs        # 跨平台静态导出入口
 AGENTS.md                      # Codex 开发约束和入口说明
 ```
 
@@ -281,7 +205,46 @@ AGENTS.md                      # Codex 开发约束和入口说明
 - 本地 `npm run dev` 使用同一前端源码和数据链路，不依赖 Sites 身份验证。
 - 不使用 D1、R2、数据库或 Sites 专属 API。
 - 本地构建仍会生成 Worker 兼容产物，便于后续用 Codex 更新原 Site。
-- `npm run build:pages` 使用 Next.js 静态导出和 `/highnlow` 子路径，不会生成 Worker。
+
+## GitHub Pages 与自定义域名
+
+项目可静态导出到 `https://gaoqiz.com/highlowstats/`。本地生成 GitHub Pages 版本：
+
+```bash
+npm run build:pages
+```
+
+静态文件会输出到 `out/`，所有页面、脚本、样式、字体和 favicon 均使用 `/highlowstats/` 子路径。不要直接提交 `out/`；仓库根目录的 GitHub Actions 工作流负责构建并发布。
+
+ZIP 内的工作流模板位于：
+
+```text
+deploy/github-pages.yml
+```
+
+把源码文件夹上传为 Gaoqiz 仓库根目录下的 `highlowstats/`，再把模板复制到仓库根目录：
+
+```bash
+mkdir -p .github/workflows
+cp highlowstats/deploy/github-pages.yml .github/workflows/deploy-pages.yml
+```
+
+GitHub Pages 的 Source 必须设为 `GitHub Actions`。工作流监听 Gaoqiz 仓库的 `master` 分支，会保留现有主页和 `CNAME`，并把静态 App 放入发布产物的 `highlowstats/` 目录。
+
+本地预览子路径版本：
+
+```bash
+npm run build:pages
+mkdir -p /tmp/gaoqiz-preview/highlowstats
+cp -R out/. /tmp/gaoqiz-preview/highlowstats/
+python3 -m http.server 8080 --directory /tmp/gaoqiz-preview
+```
+
+然后访问：
+
+```text
+http://localhost:8080/highlowstats/
+```
 
 ## 测试覆盖
 

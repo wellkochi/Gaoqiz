@@ -1,22 +1,11 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const basePath =
-  process.env.GITHUB_PAGES === "true" ? "/highnlow" : "";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+  process.env.GITHUB_PAGES === "true" ? "/highlowstats" : "";
 
 export const metadata: Metadata = {
-  title: "Crypto 日内高低点分布 | Binance Futures",
+  title: "highlowstats | Binance Futures 高低点统计",
   description: "统计 BTC、ETH、SOL、HYPE、XRP、DOGE、ZEC 和 BNB 每个 UTC 交易日最高价和最低价首次出现小时的概率分布。",
   other: {
     "codex-preview": "development",
@@ -34,11 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }
