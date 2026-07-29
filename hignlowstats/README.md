@@ -1,6 +1,6 @@
-# hignnlow
+# highlowstats
 
-`hignnlow` 是一个面向加密货币交易研究的响应式网页 App。它读取 Binance USDⓈ-M Futures 的公开 `1h` K 线，统计：
+`highlowstats` 是一个面向加密货币交易研究的响应式网页 App。它读取 Binance USDⓈ-M Futures 的公开 `1h` K 线，统计：
 
 - 每个完整 UTC 日的最高价、最低价首次出现在哪个小时；
 - 每个完整 UTC 周的最高价、最低价首次出现在哪个星期；
@@ -31,7 +31,7 @@
 ## 安装
 
 ```bash
-cd hignnlow
+cd highlowstats
 npm install
 ```
 
@@ -107,7 +107,7 @@ out/
 Gaoqiz/
 ├── CNAME
 ├── 现有主页文件
-├── hignnlow/                   # 本项目源码
+├── highlowstats/                   # 本项目源码
 └── .github/
     └── workflows/
         └── deploy-pages.yml
@@ -119,16 +119,16 @@ Gaoqiz/
 deploy/github-pages.yml
 ```
 
-GitHub 只读取仓库根目录下的 `.github/workflows/`。把新的 `hignnlow/` 放入 `Gaoqiz/` 后，在仓库根目录执行：
+GitHub 只读取仓库根目录下的 `.github/workflows/`。把新的 `highlowstats/` 放入 `Gaoqiz/` 后，在仓库根目录执行：
 
 ```bash
 mkdir -p .github/workflows
-cp hignnlow/deploy/github-pages.yml .github/workflows/deploy-pages.yml
+cp highlowstats/deploy/github-pages.yml .github/workflows/deploy-pages.yml
 ```
 
 该工作流会：
 
-1. 安装并检查 `hignnlow`；
+1. 安装并检查 `highlowstats`；
 2. 生成静态 `out/`；
 3. 保留仓库中现有主页和 `CNAME`；
 4. 将 App 发布到站点产物的 `highnlow/`；
@@ -138,7 +138,7 @@ cp hignnlow/deploy/github-pages.yml .github/workflows/deploy-pages.yml
 
 ### 本地预览 GitHub Pages 版本
 
-在 `hignnlow/` 中执行：
+在 `highlowstats/` 中执行：
 
 ```bash
 npm run build:pages

@@ -2,7 +2,7 @@
 
 ## 项目用途
 
-`hignnlow` 使用 Binance USDⓈ-M Futures 公共 `1h` K 线，研究八个加密资产的日内高低点小时/UTC 交易时段分布，以及完整 UTC 周内高低点的星期分布。
+`highlowstats` 使用 Binance USDⓈ-M Futures 公共 `1h` K 线，研究八个加密资产的日内高低点小时/UTC 交易时段分布，以及完整 UTC 周内高低点的星期分布。
 
 不要把它改成实时交易、下单或投资建议产品。修改应保持当前统计口径和 UI 行为，除非用户明确要求改变。
 
@@ -115,4 +115,4 @@ npm run build
 - `DailyTable` 默认折叠，但 CSV 导出无需先展开。
 - 不要删除 Sites/Vinext 构建脚本；本地开发不依赖 Sites，但后续更新原部署需要这些文件。
 - `npm run build` 是 Sites/Worker 构建；`npm run build:pages` 是 GitHub Pages 静态导出。不要把两种产物或部署流程混用。
-- GitHub 只识别仓库根目录的 `.github/workflows/`。项目内 `deploy/github-pages.yml` 是模板，放入 `Gaoqiz/hignnlow/` 后需复制到 `Gaoqiz/.github/workflows/deploy-pages.yml`。
+- GitHub 只识别仓库根目录的 `.github/workflows/`。项目内 `deploy/github-pages.yml` 是模板，放入 `Gaoqiz/highlowstats/` 后需复制到 `Gaoqiz/.github/workflows/deploy-pages.yml`。

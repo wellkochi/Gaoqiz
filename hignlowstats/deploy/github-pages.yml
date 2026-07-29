@@ -28,29 +28,29 @@ jobs:
         with:
           node-version: 22.13.0
           cache: npm
-          cache-dependency-path: hignnlow/package-lock.json
+          cache-dependency-path: highlowstats/package-lock.json
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
       - name: Install app dependencies
-        working-directory: hignnlow
+        working-directory: highlowstats
         run: npm ci
 
       - name: Check TypeScript
-        working-directory: hignnlow
+        working-directory: highlowstats
         run: npm run typecheck
 
       - name: Run ESLint
-        working-directory: hignnlow
+        working-directory: highlowstats
         run: npm run lint
 
       - name: Run tests
-        working-directory: hignnlow
+        working-directory: highlowstats
         run: npm run test
 
       - name: Build static app
-        working-directory: hignnlow
+        working-directory: highlowstats
         run: npm run build:pages
 
       - name: Prepare complete website
@@ -62,12 +62,12 @@ jobs:
             --exclude=".github/" \
             --exclude="_site/" \
             --exclude="highnlow/" \
-            --exclude="hignnlow/" \
+            --exclude="highlowstats/" \
             --exclude="node_modules/" \
             ./ _site/
 
           mkdir -p _site/highnlow
-          cp -R hignnlow/out/. _site/highnlow/
+          cp -R highlowstats/out/. _site/highnlow/
           touch _site/.nojekyll
 
       - name: Upload GitHub Pages artifact
