@@ -17,6 +17,9 @@
 - 全局样式：`app/globals.css`
 - Worker 入口：`worker/index.ts`
 - Sites 身份：`.openai/hosting.json`
+- GitHub Pages 配置：`next.config.ts`
+- GitHub Pages 构建入口：`scripts/build-pages.mjs`
+- GitHub Pages 工作流模板：`deploy/github-pages.yml`
 
 ## 主要目录
 
@@ -41,6 +44,7 @@ npm run typecheck
 npm run lint
 npm run test
 npm run build
+npm run build:pages
 npm run preview
 ```
 
@@ -67,6 +71,7 @@ npm run test:e2e
 12. 周内概率分母是有效完整周数；日内 weekday 筛选不得影响周内统计。
 13. UTC/本地切换只改变显示，不改变 UTC 日、周和交易时段样本。
 14. 生产环境只能读取真实 Binance 数据；Mock 仅允许在 `tests/`。
+15. GitHub Pages 的公开路径固定为 `/highnlow/`；修改页面资源时必须同时验证子路径，不得假设部署在域名根目录。
 
 ## 数据层注意事项
 
@@ -109,3 +114,5 @@ npm run build
 - 日内 weekday 筛选使用设备今天的星期；周统计始终使用全部有效日记录。
 - `DailyTable` 默认折叠，但 CSV 导出无需先展开。
 - 不要删除 Sites/Vinext 构建脚本；本地开发不依赖 Sites，但后续更新原部署需要这些文件。
+- `npm run build` 是 Sites/Worker 构建；`npm run build:pages` 是 GitHub Pages 静态导出。不要把两种产物或部署流程混用。
+- GitHub 只识别仓库根目录的 `.github/workflows/`。项目内 `deploy/github-pages.yml` 是模板，放入 `Gaoqiz/hignnlow/` 后需复制到 `Gaoqiz/.github/workflows/deploy-pages.yml`。

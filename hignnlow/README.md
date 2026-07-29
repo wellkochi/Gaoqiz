@@ -77,6 +77,82 @@ npm run preview
 http://localhost:3000
 ```
 
+## GitHub Pages：`gaoqiz.com/highnlow/`
+
+项目保留原有 Sites/Worker 构建，同时额外支持 Next.js 静态导出到 GitHub Pages 子路径。执行：
+
+```bash
+npm run build:pages
+```
+
+会自动设置构建标记并生成：
+
+```text
+out/
+```
+
+静态版本固定使用：
+
+```text
+/highnlow/
+```
+
+作为 `basePath` 和静态资源前缀；本地 `npm run dev`、`npm run build` 与原 Sites 构建不受影响。
+
+### Gaoqiz 仓库结构
+
+部署工作流假定仓库结构为：
+
+```text
+Gaoqiz/
+├── CNAME
+├── 现有主页文件
+├── hignnlow/                   # 本项目源码
+└── .github/
+    └── workflows/
+        └── deploy-pages.yml
+```
+
+项目内附有可直接使用的工作流模板：
+
+```text
+deploy/github-pages.yml
+```
+
+GitHub 只读取仓库根目录下的 `.github/workflows/`。把新的 `hignnlow/` 放入 `Gaoqiz/` 后，在仓库根目录执行：
+
+```bash
+mkdir -p .github/workflows
+cp hignnlow/deploy/github-pages.yml .github/workflows/deploy-pages.yml
+```
+
+该工作流会：
+
+1. 安装并检查 `hignnlow`；
+2. 生成静态 `out/`；
+3. 保留仓库中现有主页和 `CNAME`；
+4. 将 App 发布到站点产物的 `highnlow/`；
+5. 整站部署到 GitHub Pages。
+
+在 GitHub 仓库的 `Settings → Pages → Build and deployment → Source` 选择 `GitHub Actions`。不需要为 `/highnlow` 新增 CNAME 或修改 DNS。
+
+### 本地预览 GitHub Pages 版本
+
+在 `hignnlow/` 中执行：
+
+```bash
+npm run build:pages
+mkdir -p /tmp/gaoqiz-preview/highnlow
+cp -R out/. /tmp/gaoqiz-preview/highnlow/
+python3 -m http.server 8080 --directory /tmp/gaoqiz-preview
+```
+
+浏览器打开：
+
+```text
+http://localhost:8080/highnlow/
+```
+
 ## 数据源
 
 八个资产统一使用 Binance USDⓈ-M Futures 公共接口：
@@ -186,6 +262,8 @@ tests/
   e2e/dashboard.spec.ts        # 桌面和移动关键交互
 worker/index.ts                # Vinext/Cloudflare Worker 入口
 .openai/hosting.json           # 现有 ChatGPT Sites 项目标识
+deploy/github-pages.yml        # 复制到 Gaoqiz 仓库根目录的 Pages 工作流
+scripts/build-pages.mjs        # 跨平台静态导出入口
 AGENTS.md                      # Codex 开发约束和入口说明
 ```
 
@@ -203,6 +281,7 @@ AGENTS.md                      # Codex 开发约束和入口说明
 - 本地 `npm run dev` 使用同一前端源码和数据链路，不依赖 Sites 身份验证。
 - 不使用 D1、R2、数据库或 Sites 专属 API。
 - 本地构建仍会生成 Worker 兼容产物，便于后续用 Codex 更新原 Site。
+- `npm run build:pages` 使用 Next.js 静态导出和 `/highnlow` 子路径，不会生成 Worker。
 
 ## 测试覆盖
 

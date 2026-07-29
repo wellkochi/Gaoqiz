@@ -86,8 +86,7 @@ const vinext = lock.packages?.["node_modules/vinext"];
 if (!vinext?.resolved || !vinext?.integrity) {
   throw new Error("package-lock.json does not contain a resolved, integrity-pinned vinext tarball");
 }
-console.log(vinext.resolved);
-console.log(vinext.integrity);
+process.stdout.write(`${vinext.resolved}\n${vinext.integrity}\n`);
 NODE
 } 2>/dev/null)" || {
   echo "Could not read the integrity-pinned vinext tarball from package-lock.json." >&2
