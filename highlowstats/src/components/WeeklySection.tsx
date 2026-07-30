@@ -44,10 +44,12 @@ export function WeeklySection({
   result,
   language,
   ready,
+  highlightedWeekdayIndex,
 }: {
   result: WeeklyStatisticsResult;
   language: Language;
   ready: boolean;
+  highlightedWeekdayIndex: number | null;
 }) {
   const [mode, setMode] = useState<ChartMode>("high");
   const t = copy[language];
@@ -137,6 +139,11 @@ export function WeeklySection({
           timeZoneLabel="UTC"
           hourly={false}
           period="week"
+          highlightedIndexes={
+            highlightedWeekdayIndex === null
+              ? []
+              : [highlightedWeekdayIndex]
+          }
         />
       </div>
 

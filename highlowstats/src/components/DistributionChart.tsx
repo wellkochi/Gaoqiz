@@ -3,10 +3,12 @@
 import {
   Bar,
   BarChart,
+  Cell,
   CartesianGrid,
   Legend,
   Line,
   LineChart,
+  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -21,6 +23,54 @@ interface TooltipPayloadItem {
   dataKey?: string;
   value?: number;
   payload?: DistributionPoint;
+}
+
+interface TickPayload {
+  value: string;
+}
+
+function DistributionTick({
+  x = 0,
+  y = 0,
+  payload,
+  highlightedBuckets,
+  hourly,
+}: {
+  x?: number;
+  y?: number;
+  payload?: TickPayload;
+  highlightedBuckets: Set<string>;
+  hourly: boolean;
+}) {
+  if (!payload) return null;
+  const highlighted = highlightedBuckets.has(payload.value);
+  const label = hourly ? payload.value.slice(0, 5) : payload.value;
+
+  return (
+    <g
+      className={highlighted ? "chart-tick current-time-tick" : "chart-tick"}
+      data-current-time={highlighted ? "true" : undefined}
+      transform={`translate(${x},${y})`}
+    >
+      {highlighted && (
+        <circle
+          className="current-time-tick-marker"
+          cx={-5}
+          cy={11}
+          r={4}
+        />
+      )}
+      <text
+        x={0}
+        y={0}
+        dy={16}
+        textAnchor="end"
+        transform="rotate(-45)"
+      >
+        {label}
+      </text>
+    </g>
+  );
 }
 
 function ChartTooltip({
@@ -75,6 +125,7 @@ export function DistributionChart({
   timeZoneLabel,
   hourly = true,
   period = "day",
+  highlightedIndexes = [],
 }: {
   data: DistributionPoint[];
   mode: Mode;
@@ -83,15 +134,49 @@ export function DistributionChart({
   timeZoneLabel: string;
   hourly?: boolean;
   period?: "day" | "week";
+  highlightedIndexes?: number[];
 }) {
-  const tickFormatter = (value: string) => hourly ? value.slice(0, 5) : value;
   const yFormatter = (value: number) => `${value}%`;
+  const highlightedIndexSet = new Set(highlightedIndexes);
+  const highlightedBuckets = new Set(
+    data
+      .filter((point) => highlightedIndexSet.has(point.index))
+      .map((point) => point.bucket),
+  );
+  const currentTimeLabel =
+    language === "zh" ? "设备当前本地时间" : "Current device local time";
+  const chartAriaLabel =
+    language === "zh" ? "极值概率分布图" : "Extreme probability chart";
+  const highlightedAria = highlightedBuckets.size
+    ? `${chartAriaLabel} · ${currentTimeLabel}: ${[...highlightedBuckets].join(", ")}`
+    : chartAriaLabel;
+  const tick = (props: {
+    x?: number;
+    y?: number;
+    payload?: TickPayload;
+  }) => (
+    <DistributionTick
+      {...props}
+      highlightedBuckets={highlightedBuckets}
+      hourly={hourly}
+    />
+  );
+  const referenceLines = [...highlightedBuckets].map((bucket) => (
+    <ReferenceLine
+      key={bucket}
+      className="current-time-reference"
+      x={bucket}
+      stroke="#d68a16"
+      strokeDasharray="4 4"
+      strokeWidth={2}
+    />
+  ));
 
   return (
     <div
       className="chart-scroll"
       role="region"
-      aria-label={language === "zh" ? "极值概率分布图" : "Extreme probability chart"}
+      aria-label={highlightedAria}
       tabIndex={0}
     >
       <div className={hourly ? "chart-inner" : "chart-inner compact-chart"}>
@@ -101,12 +186,9 @@ export function DistributionChart({
               <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="#e3e7ec" />
               <XAxis
                 dataKey="bucket"
-                tickFormatter={tickFormatter}
-                interval={hourly ? 1 : 0}
-                angle={-45}
-                textAnchor="end"
+                interval={0}
                 height={62}
-                tick={{ fill: "#657081", fontSize: 11 }}
+                tick={tick}
               />
               <YAxis
                 tickFormatter={yFormatter}
@@ -125,6 +207,7 @@ export function DistributionChart({
                 }
               />
               <Legend verticalAlign="top" height={36} />
+              {referenceLines}
               <Line
                 name={
                   period === "week"
@@ -158,12 +241,9 @@ export function DistributionChart({
               <CartesianGrid strokeDasharray="3 5" vertical={false} stroke="#e3e7ec" />
               <XAxis
                 dataKey="bucket"
-                tickFormatter={tickFormatter}
-                interval={hourly ? 1 : 0}
-                angle={-45}
-                textAnchor="end"
+                interval={0}
                 height={62}
-                tick={{ fill: "#657081", fontSize: 11 }}
+                tick={tick}
               />
               <YAxis
                 tickFormatter={yFormatter}
@@ -195,7 +275,25 @@ export function DistributionChart({
                 fill={mode === "high" ? "#1457d9" : "#d9553f"}
                 radius={mode === "high" ? [5, 5, 0, 0] : [0, 0, 5, 5]}
                 minPointSize={2}
-              />
+              >
+                {data.map((point) => {
+                  const highlighted = highlightedIndexSet.has(point.index);
+                  return (
+                    <Cell
+                      key={point.bucket}
+                      className={highlighted ? "current-time-bar" : undefined}
+                      data-current-time={highlighted ? "true" : undefined}
+                      fill={
+                        mode === "high"
+                          ? highlighted ? "#2f6fe4" : "#1457d9"
+                          : highlighted ? "#e76852" : "#d9553f"
+                      }
+                      stroke={highlighted ? "#d68a16" : "none"}
+                      strokeWidth={highlighted ? 3 : 0}
+                    />
+                  );
+                })}
+              </Bar>
             </BarChart>
           )}
         </ResponsiveContainer>

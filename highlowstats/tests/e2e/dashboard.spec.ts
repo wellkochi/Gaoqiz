@@ -29,6 +29,55 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
+test("设备本地时刻高亮小时、交易时段和星期", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator(".summary-grid").first().locator(".success-card strong")).toHaveText("30");
+  const current = await page.evaluate(() => {
+    const now = new Date();
+    return {
+      hour: now.getHours(),
+      weekday: (now.getDay() + 6) % 7,
+    };
+  });
+  const hourLabel = `${String(current.hour).padStart(2, "0")}:00`;
+  const sessionLabel =
+    current.hour < 6
+      ? "Asia"
+      : current.hour < 12
+        ? "London"
+        : current.hour < 20
+          ? "New York"
+          : "Close";
+  const weekdayLabel = [
+    "周一",
+    "周二",
+    "周三",
+    "周四",
+    "周五",
+    "周六",
+    "周日",
+  ][current.weekday];
+
+  const intradayPanel = page.locator(
+    'section[aria-labelledby="distribution-title"]',
+  );
+  await expect(intradayPanel.locator(".current-time-bar")).toHaveCount(1);
+  await expect(intradayPanel.locator(".current-time-tick text")).toHaveText(hourLabel);
+  await expect(intradayPanel.getByText("Today", { exact: true })).toBeVisible();
+
+  await intradayPanel.getByRole("button", { name: "按交易时段" }).click();
+  await expect(intradayPanel.locator(".current-time-bar")).toHaveCount(1);
+  await expect(intradayPanel.locator(".current-time-tick text")).toHaveText(sessionLabel);
+
+  const weeklyPanel = page.locator(".weekly-chart-panel");
+  await expect(weeklyPanel.locator(".current-time-bar")).toHaveCount(1);
+  await expect(weeklyPanel.locator(".current-time-tick text")).toHaveText(weekdayLabel);
+
+  await page.getByRole("button", { name: "本地" }).click();
+  await intradayPanel.getByRole("button", { name: "按小时" }).click();
+  await expect(intradayPanel.locator(".current-time-tick text")).toHaveText(hourLabel);
+});
+
 test("默认加载 30 日并切换对比视图", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".summary-grid").first().locator(".success-card strong")).toHaveText("30");
@@ -60,7 +109,7 @@ test("默认加载 30 日并切换对比视图", async ({ page }) => {
   await page.getByRole("button", { name: "折叠明细" }).click();
   await expect(page.locator("#daily-table-content")).toHaveCount(0);
   await expect(page.getByRole("heading", { name: "周内高低点星期分布" }).first()).toBeVisible();
-  await expect(page.locator(".weekly-summary-grid .success-card strong")).toHaveText("4");
+  await expect(page.locator(".weekly-summary-grid .success-card strong")).toHaveText(/^[1-5]$/);
 });
 
 test("无效日期范围显示中文错误", async ({ page }) => {

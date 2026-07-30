@@ -62,7 +62,7 @@ describe("BTC 日内极值统计", () => {
     expect(sessions.map((point) => point.lowProbability)).toEqual([25, 25, 25, 25]);
   });
 
-  it("weekday/weekend 开关按当前具体 UTC 星期筛选日内样本", () => {
+  it("Today 开关按当前具体 UTC 星期筛选日内样本", () => {
     const result = calculateStatistics(
       [
         ...makeDay("2026-07-27", 4, 20),

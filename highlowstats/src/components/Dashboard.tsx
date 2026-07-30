@@ -41,6 +41,10 @@ import {
   formatUtcDate,
   shiftUtcDate,
 } from "@/src/utils/utc";
+import {
+  getDeviceLocalTimeHighlight,
+  type DeviceTimeHighlight,
+} from "@/src/utils/device-time";
 
 type ChartMode = "high" | "low" | "combined";
 type DisplayZone = "UTC" | "local";
@@ -110,7 +114,8 @@ export function Dashboard() {
   const [chartMode, setChartMode] = useState<ChartMode>("high");
   const [dimension, setDimension] = useState<DistributionDimension>("hour");
   const [weekdayFilterEnabled, setWeekdayFilterEnabled] = useState(false);
-  const [currentWeekdayIndex, setCurrentWeekdayIndex] = useState(0);
+  const [deviceTimeHighlight, setDeviceTimeHighlight] =
+    useState<DeviceTimeHighlight | null>(null);
   const [loading, setLoading] = useState(false);
   const [loadingEarliest, setLoadingEarliest] = useState(false);
   const [progress, setProgress] = useState({ loaded: 0, total: 0, fromCache: 0 });
@@ -124,6 +129,7 @@ export function Dashboard() {
   const activeMarket = MARKETS.find((market) => market.symbol === symbol) ?? MARKETS[0];
   const timeZone = displayZone === "local" ? localTimeZone : "UTC";
   const timeZoneLabel = displayZone === "local" ? localTimeZone : "UTC";
+  const currentWeekdayIndex = deviceTimeHighlight?.weekdayIndex ?? 0;
   const currentWeekdayLabel = t.weekdays[currentWeekdayIndex];
   const distributionRecords = useMemo(() => {
     const records = result?.records ?? [];
@@ -156,6 +162,16 @@ export function Dashboard() {
     () => peakLabels(distribution, "lowProbability", language),
     [distribution, language],
   );
+  const highlightedDistributionIndexes = useMemo(() => {
+    if (!deviceTimeHighlight) return [];
+    if (dimension === "session") {
+      return [deviceTimeHighlight.sessionIndex];
+    }
+    const localHourPrefix = `${String(deviceTimeHighlight.hourIndex).padStart(2, "0")}:`;
+    return distribution
+      .filter((point) => point.bucket.startsWith(localHourPrefix))
+      .map((point) => point.index);
+  }, [deviceTimeHighlight, dimension, distribution]);
 
   const run = useCallback(
     async (
@@ -219,18 +235,33 @@ export function Dashboard() {
   );
 
   useEffect(() => {
+    const updateDeviceTime = () => {
+      setDeviceTimeHighlight(getDeviceLocalTimeHighlight(new Date()));
+    };
+    updateDeviceTime();
+    const clockTimer = window.setInterval(updateDeviceTime, 30_000);
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") updateDeviceTime();
+    };
+    window.addEventListener("focus", updateDeviceTime);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
     const timer = window.setTimeout(() => {
       const detectedZone = Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
       const savedLanguage = window.localStorage.getItem("intraday-language");
       const savedZone = window.localStorage.getItem("intraday-display-zone");
       preferencesReadyRef.current = true;
       setLocalTimeZone(detectedZone);
-      setCurrentWeekdayIndex((new Date().getDay() + 6) % 7);
       if (savedLanguage === "zh" || savedLanguage === "en") setLanguage(savedLanguage);
       if (savedZone === "UTC" || savedZone === "local") setDisplayZone(savedZone);
       void run(defaultStart, defaultEnd, false, "BTCUSDT");
     }, 0);
-    return () => window.clearTimeout(timer);
+    return () => {
+      window.clearTimeout(timer);
+      window.clearInterval(clockTimer);
+      window.removeEventListener("focus", updateDeviceTime);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -605,6 +636,7 @@ export function Dashboard() {
             language={language}
             timeZoneLabel={dimension === "hour" ? timeZoneLabel : "UTC"}
             hourly={dimension === "hour"}
+            highlightedIndexes={highlightedDistributionIndexes}
           />
         </section>
 
@@ -632,7 +664,12 @@ export function Dashboard() {
           </details>
           )}
 
-        <WeeklySection result={weeklyResult} language={language} ready={Boolean(result)} />
+        <WeeklySection
+          result={weeklyResult}
+          language={language}
+          ready={Boolean(result)}
+          highlightedWeekdayIndex={deviceTimeHighlight?.weekdayIndex ?? null}
+        />
 
         <section className="method-grid" aria-labelledby="method-title">
           <div>

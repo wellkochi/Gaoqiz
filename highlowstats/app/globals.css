@@ -648,6 +648,35 @@ input[type="date"]:focus {
   min-width: 520px;
 }
 
+.chart-tick text {
+  fill: #657081;
+  font-size: 11px;
+  transition:
+    fill 160ms ease,
+    font-weight 160ms ease;
+}
+
+.current-time-tick text {
+  fill: #a45d00;
+  font-weight: 850;
+}
+
+.current-time-tick-marker {
+  fill: #f5a524;
+  stroke: #fff;
+  stroke-width: 1.5px;
+  filter: drop-shadow(0 1px 2px rgba(107, 63, 0, 0.35));
+}
+
+.current-time-bar {
+  filter: drop-shadow(0 0 6px rgba(214, 138, 22, 0.72));
+}
+
+.current-time-reference {
+  opacity: 0.78;
+  filter: drop-shadow(0 0 3px rgba(214, 138, 22, 0.45));
+}
+
 .dimension-row {
   margin-bottom: 22px;
 }
