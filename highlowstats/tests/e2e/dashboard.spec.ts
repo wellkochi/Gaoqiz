@@ -36,16 +36,17 @@ test("设备本地时刻高亮小时、交易时段和星期", async ({ page }) 
     const now = new Date();
     return {
       hour: now.getHours(),
+      utcHour: now.getUTCHours(),
       weekday: (now.getDay() + 6) % 7,
     };
   });
   const hourLabel = `${String(current.hour).padStart(2, "0")}:00`;
   const sessionLabel =
-    current.hour < 6
+    current.utcHour < 6
       ? "Asia"
-      : current.hour < 12
+      : current.utcHour < 12
         ? "London"
-        : current.hour < 20
+        : current.utcHour < 20
           ? "New York"
           : "Close";
   const weekdayLabel = [

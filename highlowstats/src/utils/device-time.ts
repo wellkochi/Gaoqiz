@@ -4,6 +4,8 @@ export interface DeviceTimeHighlight {
   weekdayIndex: number;
 }
 
+export const DEVICE_TIME_REFRESH_INTERVAL_MS = 30 * 60 * 1000;
+
 export function sessionIndexForHour(hour: number): number {
   if (!Number.isInteger(hour) || hour < 0 || hour > 23) {
     throw new Error("小时索引必须在 0 到 23 之间");
@@ -20,7 +22,7 @@ export function getDeviceLocalTimeHighlight(
   const hourIndex = date.getHours();
   return {
     hourIndex,
-    sessionIndex: sessionIndexForHour(hourIndex),
+    sessionIndex: sessionIndexForHour(date.getUTCHours()),
     weekdayIndex: (date.getDay() + 6) % 7,
   };
 }

@@ -144,7 +144,7 @@ export function DistributionChart({
       .map((point) => point.bucket),
   );
   const currentTimeLabel =
-    language === "zh" ? "设备当前本地时间" : "Current device local time";
+    language === "zh" ? "当前时刻" : "Current time";
   const chartAriaLabel =
     language === "zh" ? "极值概率分布图" : "Extreme probability chart";
   const highlightedAria = highlightedBuckets.size

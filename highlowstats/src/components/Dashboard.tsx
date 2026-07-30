@@ -42,6 +42,7 @@ import {
   shiftUtcDate,
 } from "@/src/utils/utc";
 import {
+  DEVICE_TIME_REFRESH_INTERVAL_MS,
   getDeviceLocalTimeHighlight,
   type DeviceTimeHighlight,
 } from "@/src/utils/device-time";
@@ -239,7 +240,10 @@ export function Dashboard() {
       setDeviceTimeHighlight(getDeviceLocalTimeHighlight(new Date()));
     };
     updateDeviceTime();
-    const clockTimer = window.setInterval(updateDeviceTime, 30_000);
+    const clockTimer = window.setInterval(
+      updateDeviceTime,
+      DEVICE_TIME_REFRESH_INTERVAL_MS,
+    );
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") updateDeviceTime();
     };
