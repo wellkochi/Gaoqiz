@@ -2,6 +2,8 @@ export interface DeviceTimeHighlight {
   hourIndex: number;
   sessionIndex: number;
   weekdayIndex: number;
+  dayOfMonthIndex: number;
+  weekOfMonthIndex: number;
 }
 
 export const DEVICE_TIME_REFRESH_INTERVAL_MS = 30 * 60 * 1000;
@@ -16,6 +18,15 @@ export function sessionIndexForHour(hour: number): number {
   return 3;
 }
 
+export function localWeekOfMonthIndex(date: Date): number {
+  if (!Number.isFinite(date.getTime())) {
+    throw new Error("日期必须有效");
+  }
+  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+  const firstDayMondayIndex = (firstDay.getDay() + 6) % 7;
+  return Math.floor((date.getDate() + firstDayMondayIndex - 1) / 7);
+}
+
 export function getDeviceLocalTimeHighlight(
   date: Date,
 ): DeviceTimeHighlight {
@@ -24,5 +35,7 @@ export function getDeviceLocalTimeHighlight(
     hourIndex,
     sessionIndex: sessionIndexForHour(date.getUTCHours()),
     weekdayIndex: (date.getDay() + 6) % 7,
+    dayOfMonthIndex: date.getDate() - 1,
+    weekOfMonthIndex: localWeekOfMonthIndex(date),
   };
 }

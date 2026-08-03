@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test("设备本地时刻高亮小时、交易时段和星期", async ({ page }) => {
+test("设备本地时刻高亮小时、交易时段、星期和月内位置", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".summary-grid").first().locator(".success-card strong")).toHaveText("30", { timeout: 20_000 });
   const current = await page.evaluate(() => {
@@ -38,6 +38,12 @@ test("设备本地时刻高亮小时、交易时段和星期", async ({ page }) 
       hour: now.getHours(),
       utcHour: now.getUTCHours(),
       weekday: (now.getDay() + 6) % 7,
+      dayOfMonth: now.getDate(),
+      weekOfMonth:
+        Math.floor(
+          (now.getDate() + ((new Date(now.getFullYear(), now.getMonth(), 1).getDay() + 6) % 7) - 1) /
+            7,
+        ) + 1,
     };
   });
   const hourLabel = `${String(current.hour).padStart(2, "0")}:00`;
@@ -74,14 +80,30 @@ test("设备本地时刻高亮小时、交易时段和星期", async ({ page }) 
   await expect(weeklyPanel.locator(".current-time-bar")).toHaveCount(1);
   await expect(weeklyPanel.locator(".current-time-tick text")).toHaveText(weekdayLabel);
 
+  const monthlyPanel = page.locator(".monthly-chart-panel");
+  await expect(monthlyPanel.locator(".current-time-bar")).toHaveCount(1);
+  await expect(monthlyPanel.locator(".current-time-tick text")).toHaveText(
+    `${current.dayOfMonth}号`,
+  );
+  await monthlyPanel.getByRole("button", { name: "按周" }).click();
+  await expect(monthlyPanel.locator(".current-time-bar")).toHaveCount(1);
+  await expect(monthlyPanel.locator(".current-time-tick text")).toHaveText(
+    `第${current.weekOfMonth}周`,
+  );
+
   await page.getByRole("button", { name: "本地" }).click();
   await intradayPanel.getByRole("button", { name: "按小时" }).click();
   await expect(intradayPanel.locator(".current-time-tick text")).toHaveText(hourLabel);
+  await expect(monthlyPanel.locator(".current-time-tick text")).toHaveText(
+    `第${current.weekOfMonth}周`,
+  );
 });
 
 test("默认加载 30 日并切换对比视图", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator(".summary-grid").first().locator(".success-card strong")).toHaveText("30", { timeout: 20_000 });
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("BTC 高低点统计");
+  await expect(page.locator(".hero-copy")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "导出 CSV" })).toBeEnabled();
   const intradayPanel = page.locator(
     'section[aria-labelledby="distribution-title"]',
@@ -175,7 +197,7 @@ test("切换 ETH、英文和设备本地时区", async ({ page }) => {
   await expect(page.locator(".market-meta")).toContainText("ETHUSDT");
 
   await page.getByRole("button", { name: "EN" }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("When does ETH");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("ETH High/Low Statistics");
   await page.getByRole("button", { name: "Local" }).click();
   await expect(page.locator(".market-meta")).toContainText("Asia/Singapore");
   await expect(

@@ -41,10 +41,14 @@ export function MonthlySection({
   result,
   language,
   ready,
+  highlightedDayIndex,
+  highlightedWeekIndex,
 }: {
   result: MonthlyStatisticsResult;
   language: Language;
   ready: boolean;
+  highlightedDayIndex: number | null;
+  highlightedWeekIndex: number | null;
 }) {
   const [dimension, setDimension] = useState<MonthlyDimension>("day");
   const [mode, setMode] = useState<ChartMode>("high");
@@ -161,6 +165,11 @@ export function MonthlySection({
           hourly={false}
           period="month"
           wideBuckets={dimension === "day"}
+          highlightedIndexes={
+            dimension === "day"
+              ? highlightedDayIndex === null ? [] : [highlightedDayIndex]
+              : highlightedWeekIndex === null ? [] : [highlightedWeekIndex]
+          }
         />
       </div>
 

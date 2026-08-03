@@ -419,19 +419,9 @@ export function Dashboard() {
             <p className="eyebrow">MARKET MICROSTRUCTURE · {symbol}</p>
             <h1>
               {language === "zh"
-                ? `${activeMarket.asset} 高低点，`
-                : `When does ${activeMarket.asset}`}<br />
-              <em>
-                {language === "zh"
-                  ? "通常出现在哪个小时、星期？"
-                  : "set its daily and weekly extremes?"}
-              </em>
+                ? `${activeMarket.asset} 高低点统计`
+                : `${activeMarket.asset} High/Low Statistics`}
             </h1>
-            <p className="hero-copy">
-              {language === "zh"
-                ? `基于 Binance Futures ${symbol} 的 1 小时 K 线，同时统计日内小时分布与周内星期分布。`
-                : `Using Binance Futures ${symbol} hourly candles, this app measures both intraday hour and weekly weekday distributions.`}
-            </p>
           </div>
           <aside className="utc-rule">
             <span>UTC TRADING DAY</span>
@@ -697,6 +687,8 @@ export function Dashboard() {
           result={monthlyResult}
           language={language}
           ready={Boolean(result)}
+          highlightedDayIndex={deviceTimeHighlight?.dayOfMonthIndex ?? null}
+          highlightedWeekIndex={deviceTimeHighlight?.weekOfMonthIndex ?? null}
         />
 
         <section className="method-grid" aria-labelledby="method-title">

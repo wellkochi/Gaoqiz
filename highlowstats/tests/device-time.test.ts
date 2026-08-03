@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEVICE_TIME_REFRESH_INTERVAL_MS,
   getDeviceLocalTimeHighlight,
+  localWeekOfMonthIndex,
   sessionIndexForHour,
 } from "@/src/utils/device-time";
 
@@ -12,6 +13,21 @@ describe("设备本地当前时间高亮", () => {
     const highlight = getDeviceLocalTimeHighlight(mondayEvening);
     expect(highlight.hourIndex).toBe(19);
     expect(highlight.weekdayIndex).toBe(0);
+    expect(highlight.dayOfMonthIndex).toBe(18);
+    expect(highlight.weekOfMonthIndex).toBe(3);
+  });
+
+  it.each([
+    [new Date(2026, 7, 1, 12), 0],
+    [new Date(2026, 7, 2, 12), 0],
+    [new Date(2026, 7, 3, 12), 1],
+    [new Date(2026, 7, 31, 12), 5],
+  ])("设备本地日期 %s 映射到月内周索引 %i", (date, weekIndex) => {
+    expect(localWeekOfMonthIndex(date)).toBe(weekIndex);
+  });
+
+  it("拒绝无效本地日期", () => {
+    expect(() => localWeekOfMonthIndex(new Date(Number.NaN))).toThrow();
   });
 
   it("交易时段使用 UTC 小时，不误用设备本地小时", () => {
