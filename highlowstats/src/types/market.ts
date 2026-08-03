@@ -57,6 +57,37 @@ export interface WeeklyStatisticsResult {
   distribution: DistributionPoint[];
 }
 
+export interface MonthlyExtremeRecord {
+  month: string;
+  rangeStart: string;
+  rangeEnd: string;
+  high: string;
+  highDate: string;
+  highDay: number;
+  highWeek: number;
+  low: string;
+  lowDate: string;
+  lowDay: number;
+  lowWeek: number;
+  dayCount: number;
+}
+
+export interface ExcludedMonth {
+  month: string;
+  rangeStart: string;
+  rangeEnd: string;
+  reason: string;
+}
+
+export interface MonthlyStatisticsResult {
+  selectedCalendarMonths: number;
+  effectiveMonths: number;
+  records: MonthlyExtremeRecord[];
+  excludedMonths: ExcludedMonth[];
+  dayDistribution: DistributionPoint[];
+  weekDistribution: DistributionPoint[];
+}
+
 export interface StatisticsResult {
   selectedCalendarDays: number;
   effectiveDays: number;

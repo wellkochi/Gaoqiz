@@ -5,6 +5,8 @@ import type {
   ExcludedDay,
   ExcludedWeek,
   HourlyKline,
+  MonthlyExtremeRecord,
+  MonthlyStatisticsResult,
   StatisticsResult,
   WeeklyExtremeRecord,
   WeeklyStatisticsResult,
@@ -13,8 +15,11 @@ import {
   currentUtcDate,
   formatUtcDate,
   formatUtcHourBucket,
+  endOfUtcMonth,
   shiftUtcDate,
   utcDateRange,
+  utcMonthsInRange,
+  utcWeekOfMonth,
   utcWeekdayIndex,
   utcWeekStartsInRange,
 } from "@/src/utils/utc";
@@ -298,6 +303,104 @@ export function calculateWeeklyStatistics(
     records,
     excludedWeeks,
     distribution: calculateWeekdayDistribution(records),
+  };
+}
+
+export function calculateMonthlyExtremes(
+  dailyRecords: DailyExtremeRecord[],
+  startDate: string,
+  endDate: string,
+): Pick<MonthlyStatisticsResult, "records" | "excludedMonths"> {
+  const records: MonthlyExtremeRecord[] = [];
+  const excludedMonths: MonthlyStatisticsResult["excludedMonths"] = [];
+  const sortedRecords = [...dailyRecords].sort((a, b) => a.date.localeCompare(b.date));
+
+  for (const month of utcMonthsInRange(startDate, endDate)) {
+    const calendarStart = `${month}-01`;
+    const calendarEnd = endOfUtcMonth(month);
+    const rangeStart = calendarStart < startDate ? startDate : calendarStart;
+    const rangeEnd = calendarEnd > endDate ? endDate : calendarEnd;
+    const days = sortedRecords.filter(
+      (record) => record.date >= rangeStart && record.date <= rangeEnd,
+    );
+
+    if (days.length === 0) {
+      excludedMonths.push({
+        month,
+        rangeStart,
+        rangeEnd,
+        reason: "所选月范围内没有有效 UTC 交易日",
+      });
+      continue;
+    }
+
+    let highDay = days[0];
+    let lowDay = days[0];
+    for (const day of days.slice(1)) {
+      if (new Decimal(day.high).greaterThan(highDay.high)) highDay = day;
+      if (new Decimal(day.low).lessThan(lowDay.low)) lowDay = day;
+    }
+
+    records.push({
+      month,
+      rangeStart,
+      rangeEnd,
+      high: highDay.high,
+      highDate: highDay.date,
+      highDay: Number(highDay.date.slice(8, 10)),
+      highWeek: utcWeekOfMonth(highDay.date),
+      low: lowDay.low,
+      lowDate: lowDay.date,
+      lowDay: Number(lowDay.date.slice(8, 10)),
+      lowWeek: utcWeekOfMonth(lowDay.date),
+      dayCount: days.length,
+    });
+  }
+
+  return { records, excludedMonths };
+}
+
+function calculateMonthlyDistribution(
+  records: MonthlyExtremeRecord[],
+  dimension: "day" | "week",
+): DistributionPoint[] {
+  const denominator = records.length;
+  const bucketCount = dimension === "day" ? 31 : 6;
+  const highKey = dimension === "day" ? "highDay" : "highWeek";
+  const lowKey = dimension === "day" ? "lowDay" : "lowWeek";
+
+  return Array.from({ length: bucketCount }, (_, index) => {
+    const value = index + 1;
+    const highCount = records.filter((record) => record[highKey] === value).length;
+    const lowCount = records.filter((record) => record[lowKey] === value).length;
+    return {
+      index,
+      bucket: String(value),
+      highCount,
+      lowCount,
+      highProbability: denominator ? (highCount / denominator) * 100 : 0,
+      lowProbability: denominator ? (lowCount / denominator) * 100 : 0,
+    };
+  });
+}
+
+export function calculateMonthlyStatistics(
+  dailyRecords: DailyExtremeRecord[],
+  startDate: string,
+  endDate: string,
+): MonthlyStatisticsResult {
+  const { records, excludedMonths } = calculateMonthlyExtremes(
+    dailyRecords,
+    startDate,
+    endDate,
+  );
+  return {
+    selectedCalendarMonths: utcMonthsInRange(startDate, endDate).length,
+    effectiveMonths: records.length,
+    records,
+    excludedMonths,
+    dayDistribution: calculateMonthlyDistribution(records, "day"),
+    weekDistribution: calculateMonthlyDistribution(records, "week"),
   };
 }
 

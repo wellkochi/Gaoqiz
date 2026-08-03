@@ -2,7 +2,7 @@
 
 ## 项目用途
 
-`highlowstats` 使用 Binance USDⓈ-M Futures 公共 `1h` K 线，研究八个加密资产的日内高低点小时/UTC 交易时段分布，以及完整 UTC 周内高低点的星期分布。
+`highlowstats` 使用 Binance USDⓈ-M Futures 公共 `1h` K 线，研究八个加密资产的日内小时/UTC 交易时段、完整 UTC 周内星期，以及 UTC 自然月内日期/周次的高低点分布。
 
 不要把它改成实时交易、下单或投资建议产品。修改应保持当前统计口径和 UI 行为，除非用户明确要求改变。
 
@@ -20,14 +20,14 @@
 
 ## 主要目录
 
-- `src/components/`：UI、图表、周统计、每日明细
+- `src/components/`：UI、图表、周/月统计、每日明细
 - `src/config/markets.ts`：交易资产、快速日期范围和默认 30 日
 - `src/data/providers/binance.ts`：Binance Futures 请求、分页、重试、响应校验
 - `src/data/cache.ts`：IndexedDB 缓存和测试用 Memory Cache
 - `src/services/market-data-client.ts`：缓存缺口、分页进度和取消信号
-- `src/statistics/calculate.ts`：日/周极值、小时/时段/星期概率纯函数
+- `src/statistics/calculate.ts`：日/周/月极值与小时/时段/星期/日期/周次概率纯函数
 - `src/statistics/display.ts`：UTC 小时转换为设备时区显示桶
-- `src/utils/utc.ts`：UTC 日期、小时、周边界
+- `src/utils/utc.ts`：UTC 日期、小时、周/月边界与月内周次
 - `src/utils/csv.ts`：每日明细 CSV
 - `src/types/market.ts`：数据与统计类型
 - `tests/`：统计、Provider、缓存、时区、CSV 和浏览器交互
@@ -69,6 +69,9 @@ npm run test:e2e
 13. UTC/本地切换只改变显示，不改变 UTC 日、周和交易时段样本。
 14. 生产环境只能读取真实 Binance 数据；Mock 仅允许在 `tests/`。
 15. 图表当前时刻高亮中，24 小时图读取设备本地小时，UTC 交易时段图读取当前 UTC 小时，周内图读取设备本地星期；UTC/本地显示切换不得改变高亮依据。自动校准间隔固定为 30 分钟，页面重新获得焦点或恢复可见时立即校准。
+16. UTC 自然月按 `YYYY-MM` 分组；日期范围首尾的部分月使用范围内实际有效日，完全没有有效日的月份排除。
+17. 月内按天固定 1–31 号；月内按周固定第 1–6 周。月初所在部分周为第1周，之后每逢 UTC 周一递增，不得改成每 7 天简单分桶。
+18. 月内重复极值取最早 UTC 日期；月内概率分母是有效月份数。`Today` 筛选、显示时区和当前时刻高亮不得影响月统计。
 
 ## 数据层注意事项
 
@@ -109,7 +112,8 @@ npm run build
 - 设备本地时区可能有半小时偏移或夏令时，显示分布必须按每条记录的真实日期转换。
 - 同价判断不能用 JavaScript 浮点数直接相等。
 - 交易时段固定 UTC，不随显示时区切换。
-- 日内 weekday 筛选使用设备今天的星期；周统计始终使用全部有效日记录。
+- 日内 weekday 筛选使用设备今天的星期；周统计和月统计始终使用全部有效日记录。
+- 月内周次必须使用 UTC 方法计算，设备本地日期、时区和夏令时不得参与分组。
 - `DailyTable` 默认折叠，但 CSV 导出无需先展开。
 - 不要删除 Sites/Vinext 构建脚本；本地开发不依赖 Sites，但后续更新原部署需要这些文件。
 - 不要把 `deploy/github-pages.yml` 当作项目内可自动执行的工作流；上传到 Gaoqiz 后必须复制到仓库根目录的 `.github/workflows/`。

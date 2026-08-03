@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DailyTable } from "@/src/components/DailyTable";
 import { DistributionChart } from "@/src/components/DistributionChart";
+import { MonthlySection } from "@/src/components/MonthlySection";
 import { WeeklySection } from "@/src/components/WeeklySection";
 import {
   DEFAULT_RANGE_DAYS,
@@ -25,12 +26,14 @@ import { MarketDataClient } from "@/src/services/market-data-client";
 import {
   calculateSessionDistribution,
   calculateStatistics,
+  calculateMonthlyStatistics,
   calculateWeeklyStatistics,
   filterDailyRecordsByUtcWeekday,
 } from "@/src/statistics/calculate";
 import { calculateDisplayDistribution } from "@/src/statistics/display";
 import type {
   DistributionPoint,
+  MonthlyStatisticsResult,
   StatisticsResult,
   WeeklyStatisticsResult,
 } from "@/src/types/market";
@@ -60,6 +63,14 @@ const emptyWeeklyResult: WeeklyStatisticsResult = {
   records: [],
   excludedWeeks: [],
   distribution: [],
+};
+const emptyMonthlyResult: MonthlyStatisticsResult = {
+  selectedCalendarMonths: 0,
+  effectiveMonths: 0,
+  records: [],
+  excludedMonths: [],
+  dayDistribution: [],
+  weekDistribution: [],
 };
 
 function peakLabels(
@@ -153,6 +164,13 @@ export function Dashboard() {
       startDate <= endDate
         ? calculateWeeklyStatistics(result?.records ?? [], startDate, endDate)
         : emptyWeeklyResult,
+    [endDate, result, startDate],
+  );
+  const monthlyResult = useMemo(
+    () =>
+      startDate <= endDate
+        ? calculateMonthlyStatistics(result?.records ?? [], startDate, endDate)
+        : emptyMonthlyResult,
     [endDate, result, startDate],
   );
   const highPeak = useMemo(
@@ -675,6 +693,12 @@ export function Dashboard() {
           highlightedWeekdayIndex={deviceTimeHighlight?.weekdayIndex ?? null}
         />
 
+        <MonthlySection
+          result={monthlyResult}
+          language={language}
+          ready={Boolean(result)}
+        />
+
         <section className="method-grid" aria-labelledby="method-title">
           <div>
             <p className="eyebrow">{t.methodology}</p>
@@ -693,7 +717,7 @@ export function Dashboard() {
       </div>
       <footer>
         <span>{activeMarket.asset} High/Low Distribution</span>
-        <span>Data: Binance Futures · {symbol} · 1h · UTC day + week / {timeZoneLabel} display</span>
+        <span>Data: Binance Futures · {symbol} · 1h · UTC day + week + month / {timeZoneLabel} display</span>
         <span>{t.footerResearch}</span>
       </footer>
     </main>

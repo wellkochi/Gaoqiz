@@ -88,14 +88,15 @@ function ChartTooltip({
   denominator: number;
   language: Language;
   timeZoneLabel: string;
-  period: "day" | "week";
+  period: "day" | "week" | "month";
 }) {
   if (!active || !payload?.[0]?.payload) return null;
   const point = payload[0].payload;
   const high = language === "zh" ? "最高点" : "High";
   const low = language === "zh" ? "最低点" : "Low";
-  const periods =
-    period === "week"
+  const periods = period === "month"
+    ? language === "zh" ? "月" : "months"
+    : period === "week"
       ? language === "zh" ? "周" : "weeks"
       : language === "zh" ? "日" : "days";
   return (
@@ -126,6 +127,7 @@ export function DistributionChart({
   hourly = true,
   period = "day",
   highlightedIndexes = [],
+  wideBuckets = false,
 }: {
   data: DistributionPoint[];
   mode: Mode;
@@ -133,8 +135,9 @@ export function DistributionChart({
   language: Language;
   timeZoneLabel: string;
   hourly?: boolean;
-  period?: "day" | "week";
+  period?: "day" | "week" | "month";
   highlightedIndexes?: number[];
+  wideBuckets?: boolean;
 }) {
   const yFormatter = (value: number) => `${value}%`;
   const highlightedIndexSet = new Set(highlightedIndexes);
@@ -179,7 +182,9 @@ export function DistributionChart({
       aria-label={highlightedAria}
       tabIndex={0}
     >
-      <div className={hourly ? "chart-inner" : "chart-inner compact-chart"}>
+      <div
+        className={`chart-inner${!hourly && !wideBuckets ? " compact-chart" : ""}${wideBuckets ? " monthly-day-chart" : ""}`}
+      >
         <ResponsiveContainer width="100%" height={360}>
           {mode === "combined" ? (
             <LineChart data={data} margin={{ top: 18, right: 20, left: 4, bottom: 16 }}>
@@ -210,9 +215,11 @@ export function DistributionChart({
               {referenceLines}
               <Line
                 name={
-                  period === "week"
-                    ? language === "zh" ? "▲ 周内最高点" : "▲ Weekly high"
-                    : language === "zh" ? "▲ 日内最高点" : "▲ Daily high"
+                  period === "month"
+                    ? language === "zh" ? "▲ 月内最高点" : "▲ Monthly high"
+                    : period === "week"
+                      ? language === "zh" ? "▲ 周内最高点" : "▲ Weekly high"
+                      : language === "zh" ? "▲ 日内最高点" : "▲ Daily high"
                 }
                 type="monotone"
                 dataKey="highProbability"
@@ -223,9 +230,11 @@ export function DistributionChart({
               />
               <Line
                 name={
-                  period === "week"
-                    ? language === "zh" ? "▼ 周内最低点" : "▼ Weekly low"
-                    : language === "zh" ? "▼ 日内最低点" : "▼ Daily low"
+                  period === "month"
+                    ? language === "zh" ? "▼ 月内最低点" : "▼ Monthly low"
+                    : period === "week"
+                      ? language === "zh" ? "▼ 周内最低点" : "▼ Weekly low"
+                      : language === "zh" ? "▼ 日内最低点" : "▼ Daily low"
                 }
                 type="monotone"
                 dataKey="lowProbability"
@@ -264,12 +273,16 @@ export function DistributionChart({
               <Bar
                 name={
                   mode === "high"
-                    ? period === "week"
-                      ? language === "zh" ? "▲ 周内最高点" : "▲ Weekly high"
-                      : language === "zh" ? "▲ 日内最高点" : "▲ Daily high"
-                    : period === "week"
-                      ? language === "zh" ? "▼ 周内最低点" : "▼ Weekly low"
-                      : language === "zh" ? "▼ 日内最低点" : "▼ Daily low"
+                    ? period === "month"
+                      ? language === "zh" ? "▲ 月内最高点" : "▲ Monthly high"
+                      : period === "week"
+                        ? language === "zh" ? "▲ 周内最高点" : "▲ Weekly high"
+                        : language === "zh" ? "▲ 日内最高点" : "▲ Daily high"
+                    : period === "month"
+                      ? language === "zh" ? "▼ 月内最低点" : "▼ Monthly low"
+                      : period === "week"
+                        ? language === "zh" ? "▼ 周内最低点" : "▼ Weekly low"
+                        : language === "zh" ? "▼ 日内最低点" : "▼ Daily low"
                 }
                 dataKey={mode === "high" ? "highProbability" : "lowProbability"}
                 fill={mode === "high" ? "#1457d9" : "#d9553f"}

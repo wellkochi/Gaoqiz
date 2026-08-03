@@ -56,6 +56,41 @@ export function utcWeekStartsInRange(startDate: string, endDate: string): string
   return starts;
 }
 
+export function utcMonthsInRange(startDate: string, endDate: string): string[] {
+  const start = parseUtcDate(startDate);
+  const end = parseUtcDate(endDate);
+  if (start > end) throw new Error("开始日期不能晚于结束日期");
+
+  const cursor = new Date(start);
+  cursor.setUTCDate(1);
+  const months: string[] = [];
+  while (cursor.getTime() <= end) {
+    months.push(cursor.toISOString().slice(0, 7));
+    cursor.setUTCMonth(cursor.getUTCMonth() + 1);
+  }
+  return months;
+}
+
+export function endOfUtcMonth(month: string): string {
+  if (!/^\d{4}-\d{2}$/.test(month)) {
+    throw new Error("月份格式必须为 YYYY-MM");
+  }
+  const firstDay = parseUtcDate(`${month}-01`);
+  const date = new Date(firstDay);
+  date.setUTCMonth(date.getUTCMonth() + 1);
+  date.setUTCDate(0);
+  return formatUtcDate(date.getTime());
+}
+
+export function utcWeekOfMonth(date: string): number {
+  const time = parseUtcDate(date);
+  const value = new Date(time);
+  const dateOfMonth = value.getUTCDate();
+  const firstDay = new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), 1));
+  const firstDayMondayIndex = (firstDay.getUTCDay() + 6) % 7;
+  return Math.floor((dateOfMonth + firstDayMondayIndex - 1) / 7) + 1;
+}
+
 export function completedUtcDate(now = Date.now()): string {
   return formatUtcDate(now - DAY_MS);
 }
